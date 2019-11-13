@@ -32,6 +32,7 @@ class Classifier(object):
     def get_word_frequencies(self):
         return self.get_word_counts
 
+    #TASK 1
     def train_nb(self, docs, labels):
 
         num_of_lines = len(docs)    
@@ -57,11 +58,13 @@ class Classifier(object):
                     self.word_counts[c][word] = 0.0
 
                 self.word_counts[c][word] += count
+        return self.word_counts
 
 
+    #TASK 3
     #return a list of what class each document belongs to 
     #docs is a list of strings
-    def predict(self, docs):
+    def classify_documents(self, docs):
         result = []
         #for each line in the document, apply the bayes algorithm and append the result 
         for line in docs:
