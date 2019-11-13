@@ -10,7 +10,3 @@ def read_documents(file):
             docs.append(words[3:])
             labels.append(words[1])
     return docs, labels
-
-def main():
-    docs, labels = read_documents("data")
-main()
