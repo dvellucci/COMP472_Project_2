@@ -16,9 +16,9 @@ def main():
 
     classifier = ClassifierModule.Classifier()
     word_counts = classifier.train_nb(training_docs, training_labels)
-    prediction = classifier.predict(training_docs)
+    prediction = classifier.classify_documents(training_docs)
 
     accuracy = sum(1 for i in range(len(prediction)) if prediction[i] == training_labels[i]) / float(len(prediction))
-    print("{0:.4f}".format(accuracy))
+    print("Accuracy for classifier is {0:.4f}".format(accuracy))
 
 main()

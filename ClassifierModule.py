@@ -40,8 +40,8 @@ class Classifier(object):
         self.num_of_messages['neg'] = sum(1 for label in labels if label == "neg")
 
         #get log probabilities of main classes (neg and pos)
-        self.log_class_priors['pos'] = math.log(self.num_of_messages['pos'] / num_of_lines) * -1
-        self.log_class_priors['neg'] = math.log(self.num_of_messages['neg'] / num_of_lines) * -1
+        self.log_class_priors['pos'] = math.log(self.num_of_messages['pos'] / num_of_lines)
+        self.log_class_priors['neg'] = math.log(self.num_of_messages['neg'] / num_of_lines)
 
         #hold word counts for each class
         self.word_counts['pos'] = {}
@@ -75,8 +75,8 @@ class Classifier(object):
                 if word not in self.vocab: continue
 
                 #get the log probability of a word appearing in each class and add smoothing of 0.5
-                log_prob_word_given_pos = math.log( (self.word_counts['pos'].get(word, 0.0) + 0.5) / (self.num_of_messages['pos'] + len(self.vocab)) ) * -1
-                log_prob_word_given_neg = math.log( (self.word_counts['neg'].get(word, 0.0) + 0.5) / (self.num_of_messages['neg'] + len(self.vocab)) ) * -1
+                log_prob_word_given_pos = math.log( (self.word_counts['pos'].get(word, 0.0) + 0.5) / (self.num_of_messages['pos'] + len(self.vocab)) )
+                log_prob_word_given_neg = math.log( (self.word_counts['neg'].get(word, 0.0) + 0.5) / (self.num_of_messages['neg'] + len(self.vocab)) )
 
                 pos_score += log_prob_word_given_pos
                 neg_score += log_prob_word_given_neg
@@ -90,6 +90,8 @@ class Classifier(object):
                 result.append("neg")
         return result
         
+    def classify_nb(self, doc, something):
+        print({"for task 2"})
 
 
             
