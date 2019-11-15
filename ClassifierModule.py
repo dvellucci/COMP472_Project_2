@@ -59,7 +59,25 @@ class Classifier(object):
 
                 self.word_counts[c][word] += count
         return self.word_counts
+    
+    #TASK 2
+    #need to find probability of each word appearing in a label
+    #word_counts gives how many times each word appears in a label
+    def score_doc_label(self, doc, label, word_counts):
+        result = []
+        #for each line in the document, apply the bayes algorithm and append the result 
+        for line in doc:
+            counts = self.get_word_counts(self.tokenize(i) for i in line)
+            for word, _ in counts.items():
+                if word not in self.vocab: continue
 
+                #get the log probability of a word appearing in each class and add smoothing of 0.5
+                log_prob_word_given_pos = math.log( (self.word_counts['pos'].get(word, 0.0) + 0.5) / (self.num_of_messages['pos']) )
+                log_prob_word_given_neg = math.log( (self.word_counts['neg'].get(word, 0.0) + 0.5) / (self.num_of_messages['neg']) )
+        return result
+
+    def classify_nb(self, doc, word_counts_prob):
+        return
 
     #TASK 3
     #return a list of what class each document belongs to 
@@ -75,8 +93,8 @@ class Classifier(object):
                 if word not in self.vocab: continue
 
                 #get the log probability of a word appearing in each class and add smoothing of 0.5
-                log_prob_word_given_pos = math.log( (self.word_counts['pos'].get(word, 0.0) + 0.5) / (self.num_of_messages['pos'] + len(self.vocab)) )
-                log_prob_word_given_neg = math.log( (self.word_counts['neg'].get(word, 0.0) + 0.5) / (self.num_of_messages['neg'] + len(self.vocab)) )
+                log_prob_word_given_pos = math.log( (self.word_counts['pos'].get(word, 0.0) + 0.5) / (self.num_of_messages['pos']) )
+                log_prob_word_given_neg = math.log( (self.word_counts['neg'].get(word, 0.0) + 0.5) / (self.num_of_messages['neg']) )
 
                 pos_score += log_prob_word_given_pos
                 neg_score += log_prob_word_given_neg
@@ -90,8 +108,5 @@ class Classifier(object):
                 result.append("neg")
         return result
         
-    def classify_nb(self, doc, something):
-        print({"for task 2"})
-
 
             
