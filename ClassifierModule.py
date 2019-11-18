@@ -32,7 +32,7 @@ class Classifier(object):
     def get_word_frequencies(self):
         return self.get_word_counts
 
-    #TASK 1
+    #----------------------------TASK 1--------------------------------
     def train_nb(self, docs, labels):
 
         num_of_lines = len(docs)    
@@ -60,7 +60,7 @@ class Classifier(object):
                 self.word_counts[c][word] += count
         return self.word_counts
     
-    #TASK 2
+    #----------------TASK 2-----------------------
     #need to find probability of each word appearing in a label
     #word_counts gives how many times each word appears in a label
     def score_doc_label(self, doc, label):
@@ -80,10 +80,12 @@ class Classifier(object):
                 result['neg'].append(word, log_prob_word_given_neg)
         return result
 
-    def classify_nb(self, doc, word_counts_prob):
+    #classify a new document
+    def classify_nb(self, doc, label, word_counts_prob):
+        word_counts_prob = self.score_doc_label(doc, label)
         return
 
-    #TASK 3
+    #-----------------------TASK 3--------------------------------
     #return a list of what class each document belongs to 
     #docs is a list of strings
     def classify_documents(self, docs):
