@@ -9,6 +9,7 @@ class Classifier(object):
     num_of_messages = {}
     log_class_priors = {}
     word_counts = {}
+    word_log_probabilities = {}
     vocab = set()
 
     def clean(self, s):
@@ -65,7 +66,10 @@ class Classifier(object):
     #word_counts gives how many times each word appears in a label
     def score_doc_label(self, doc, label):
         result = {}
-      
+        
+        self.word_log_probabilities['pos'] = {}
+        self.word_log_probabilities['neg'] = {}
+
         #for each line in the document, apply the bayes algorithm and append the result 
         for line in doc:
             counts = self.get_word_counts(self.tokenize(i) for i in line)
@@ -76,14 +80,37 @@ class Classifier(object):
                 log_prob_word_given_pos = math.log( (self.word_counts['pos'].get(word, 0.0) + 0.5) / (self.num_of_messages['pos']) )
                 log_prob_word_given_neg = math.log( (self.word_counts['neg'].get(word, 0.0) + 0.5) / (self.num_of_messages['neg']) )
 
-                result['pos'].append(word, log_prob_word_given_pos)
-                result['neg'].append(word, log_prob_word_given_neg)
-        return result
+                temp1 = (word, log_prob_word_given_pos)
+                temp2 = (word, log_prob_word_given_neg)
+
+                self.word_log_probabilities['pos'][word] = log_prob_word_given_pos
+                self.word_log_probabilities['neg'][word] = log_prob_word_given_neg
+        return self.word_log_probabilities
 
     #classify a new document
-    def classify_nb(self, doc, label, word_counts_prob):
+    def classify_nb(self, doc, label):
+        result = []
         word_counts_prob = self.score_doc_label(doc, label)
-        return
+        for line in doc:
+            counts = self.get_word_counts(self.tokenize(i) for i in line) 
+            pos_score = 0
+            neg_score = 0
+            for word, _ in counts.items():
+                if word not in self.vocab: continue
+                log_prob_word_given_pos = word_counts_prob['pos'][word]
+                log_prob_word_given_neg = word_counts_prob['neg'][word]
+
+                pos_score += log_prob_word_given_pos
+                neg_score += log_prob_word_given_neg
+
+            pos_score += self.log_class_priors['pos']
+            neg_score += self.log_class_priors['neg']
+
+            if(pos_score > neg_score):
+                result.append("pos")
+            else:
+                result.append("neg")
+        return result
 
     #-----------------------TASK 3--------------------------------
     #return a list of what class each document belongs to 
