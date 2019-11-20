@@ -16,6 +16,7 @@ def main():
 
     classifier = ClassifierModule.Classifier()
 
+    #task 1
     word_counts = classifier.train_nb(training_docs, training_labels)
 
     #task 2
