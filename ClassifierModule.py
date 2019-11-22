@@ -83,6 +83,7 @@ class Classifier(object):
                 temp1 = (word, log_prob_word_given_pos)
                 temp2 = (word, log_prob_word_given_neg)
 
+                fsdfd = self.word_counts['pos'][word]
                 self.word_log_probabilities['pos'][word] = log_prob_word_given_pos
                 self.word_log_probabilities['neg'][word] = log_prob_word_given_neg
         return self.word_log_probabilities
