@@ -12,6 +12,11 @@ class Classifier(object):
     word_log_probabilities = {}
     vocab = set()
 
+    #this data will be written to text files
+    data_word_model = {} #probability of each word appearing in each label
+    data_model = {} #each line with it's respectice label
+    data_results = {} #each line with its predicted label and actual label
+
     def clean(self, s):
         translator = str.maketrans("", "", string.punctuation)
         return s.translate(translator)
@@ -79,13 +84,10 @@ class Classifier(object):
                 #get the log probability of a word appearing in each class and add smoothing of 0.5
                 log_prob_word_given_pos = math.log( (self.word_counts['pos'].get(word, 0.0) + 0.5) / (self.num_of_messages['pos']) )
                 log_prob_word_given_neg = math.log( (self.word_counts['neg'].get(word, 0.0) + 0.5) / (self.num_of_messages['neg']) )
-
-                temp1 = (word, log_prob_word_given_pos)
-                temp2 = (word, log_prob_word_given_neg)
-
-                fsdfd = self.word_counts['pos'][word]
                 self.word_log_probabilities['pos'][word] = log_prob_word_given_pos
                 self.word_log_probabilities['neg'][word] = log_prob_word_given_neg
+
+                self.data_word_model[word] = ("POS probability: ", log_prob_word_given_pos, "NEG probability: ", log_prob_word_given_neg)
         return self.word_log_probabilities
 
     #classify a new document
@@ -103,10 +105,11 @@ class Classifier(object):
 
                 pos_score += log_prob_word_given_pos
                 neg_score += log_prob_word_given_neg
+                self.data_results[word] = ()
 
             pos_score += self.log_class_priors['pos']
             neg_score += self.log_class_priors['neg']
-
+        
             if(pos_score > neg_score):
                 result.append("pos")
             else:
@@ -135,6 +138,8 @@ class Classifier(object):
 
             pos_score += self.log_class_priors['pos']
             neg_score += self.log_class_priors['neg']
+
+            self.data_results[line] = ("POS probability: ", pos_score, "NEG probability: ", neg_score)
 
             if pos_score > neg_score:
                 result.append("pos")
