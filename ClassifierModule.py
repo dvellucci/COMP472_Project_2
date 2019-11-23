@@ -3,14 +3,18 @@ import math
 import string
 import re
 from collections import Counter
+from itertools import chain
 
 class Classifier(object):
 
-    num_of_messages = {}
-    log_class_priors = {}
-    word_counts = {}
-    word_log_probabilities = {}
-    vocab = set()
+    vocab = set() #all individual words of the data set
+    num_of_messages = {} #all the messages of the data set
+
+    log_class_priors = {} #prior log probability of each class
+    word_counts = {}  #how many times each word appears in each class
+    word_log_probabilities = {} #the log probabilities of each word for each class
+    class_of_message = {}
+    
 
     #this data will be written to text files
     data_word_model = {} #probability of each word appearing in each label
@@ -57,6 +61,10 @@ class Classifier(object):
         for doc, label in zip(docs, labels):
             c = 'pos' if label == 'pos' else 'neg'
             counts = self.get_word_counts(self.tokenize(doc))
+
+            message = ' '.join(doc)
+            self.class_of_message[message] = label
+
             for word, count in counts.items():
                 if word not in self.vocab:
                     self.vocab.add(word)
@@ -75,19 +83,14 @@ class Classifier(object):
         self.word_log_probabilities['pos'] = {}
         self.word_log_probabilities['neg'] = {}
 
-        #for each line in the document, apply the bayes algorithm and append the result 
-        for line in doc:
-            counts = self.get_word_counts(self.tokenize(i) for i in line)
-            for word, _ in counts.items():
-                if word not in self.vocab: continue
+        for word in self.vocab:
+            log_prob_word_given_pos = math.log( (self.word_counts['pos'].get(word, 0.0) + 0.5) / (self.num_of_messages['pos']) )
+            log_prob_word_given_neg = math.log( (self.word_counts['neg'].get(word, 0.0) + 0.5) / (self.num_of_messages['neg']) )
+            self.word_log_probabilities['pos'][word] = log_prob_word_given_pos
+            self.word_log_probabilities['neg'][word] = log_prob_word_given_neg
 
-                #get the log probability of a word appearing in each class and add smoothing of 0.5
-                log_prob_word_given_pos = math.log( (self.word_counts['pos'].get(word, 0.0) + 0.5) / (self.num_of_messages['pos']) )
-                log_prob_word_given_neg = math.log( (self.word_counts['neg'].get(word, 0.0) + 0.5) / (self.num_of_messages['neg']) )
-                self.word_log_probabilities['pos'][word] = log_prob_word_given_pos
-                self.word_log_probabilities['neg'][word] = log_prob_word_given_neg
+            self.data_word_model[word] = ("POS probability: ", self.word_log_probabilities['pos'][word], "NEG probability: ", self.word_log_probabilities['neg'][word])
 
-                self.data_word_model[word] = ("POS probability: ", log_prob_word_given_pos, "NEG probability: ", log_prob_word_given_neg)
         return self.word_log_probabilities
 
     #classify a new document
@@ -109,7 +112,7 @@ class Classifier(object):
 
             pos_score += self.log_class_priors['pos']
             neg_score += self.log_class_priors['neg']
-        
+
             if(pos_score > neg_score):
                 result.append("pos")
             else:
@@ -121,6 +124,7 @@ class Classifier(object):
     #docs is a list of strings
     def classify_documents(self, docs):
         result = []
+        temp = "pos"
         #for each line in the document, apply the bayes algorithm and append the result 
         for line in docs:
             counts = self.get_word_counts(self.tokenize(i) for i in line)
@@ -135,16 +139,20 @@ class Classifier(object):
 
                 pos_score += log_prob_word_given_pos
                 neg_score += log_prob_word_given_neg
+                
+                self.data_model[word] = ("POS score: ", pos_score, "NEG score: ", neg_score)
 
             pos_score += self.log_class_priors['pos']
             neg_score += self.log_class_priors['neg']
 
-            self.data_results[line] = ("POS probability: ", pos_score, "NEG probability: ", neg_score)
-
             if pos_score > neg_score:
                 result.append("pos")
+                temp = "pos"
             else:
                 result.append("neg")
+                temp = "neg"
+            string = ' '.join(line)
+            self.data_results[string] = ("POS probability: ", pos_score, ", NEG probability: ", neg_score, ", Classified as: ", temp, ", Actual class:", self.class_of_message[string])
         return result
         
 
