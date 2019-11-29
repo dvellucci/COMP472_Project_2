@@ -43,10 +43,10 @@ def main():
   #  print("data_test_1 classified as ", result[0])
   #  print("data_test_1 is actually", labels_test_1)
 
-    docs_test_2, labels_test_2 = FileReader.read_documents("data_test_2")
-  #  result = classifier.classify_nb(docs_test_2, labels_test_2)
- #   print("data_test_2 classified as ", result[0])
-  #  print("data_test_2 is actually", labels_test_2)
+    docs_test_2, labels_test_2 = FileReader.read_documents("data_test_3")
+    #result = classifier.classify_nb(docs_test_2, labels_test_2)
+    #print("data_test_2 classified as ", result[0])
+    #print("data_test_2 is actually", labels_test_2)
 
     #Task 3
     print("\n Testing the given test data:")
@@ -63,3 +63,20 @@ def main():
     accuracy_results.close()
 
 main()
+
+
+#FOR task 4: Finding mis-classified documents
+'''
+The document "word space for the other language is not work performed or designed . for english ok ! work 's good" was mis-classified as NEG. 
+The NEG probability was roughly 3 points higher than POS.
+
+
+The document "smaller size did not fit me or my son . it would be nice if you could use perhaps a hat size to determine right size . standard size worked fine." was mis-classified as NEG.
+
+
+The document "come on . i cannot play these dual discs in my car nor any regular cd players . j&mc are excellent though" was mis-classified as POS.
+The probabilities were nearly equal.
+
+The document "the quality of the dvd 's was good . however i did not like the third season as well as the first two seasons . it seemed that the story was setting up for season 4." was mis-classified  as POS.
+
+'''
