@@ -43,20 +43,25 @@ def main():
   #  print("data_test_1 classified as ", result[0])
   #  print("data_test_1 is actually", labels_test_1)
 
-    docs_test_2, labels_test_2 = FileReader.read_documents("data_test_3")
+    docs_test_2, labels_test_2 = FileReader.read_documents("data_test_2")
     #result = classifier.classify_nb(docs_test_2, labels_test_2)
     #print("data_test_2 classified as ", result[0])
     #print("data_test_2 is actually", labels_test_2)
 
-    #Task 3
+    docs_test_3, labels_test_3 = FileReader.read_documents("data_test_3")
+    #result = classifier.classify_nb(docs_test_3, labels_test_3)
+    #print("data_test_3 classified as ", result[0])
+    #print("data_test_3 is actually", labels_test_3)
+
+    #Task 3 - Evaluate the test data
     print("\n Testing the given test data:")
-    prediction = classifier.classify_documents(training_docs)
-    accuracy = sum(1 for i in range(len(prediction)) if prediction[i] == training_labels[i]) / float(len(prediction))
+    prediction = classifier.classify_documents(evaluation_docs, evaluation_labels)
+    accuracy = sum(1 for i in range(len(prediction)) if prediction[i] == evaluation_labels[i]) / float(len(prediction))
     print("Accuracy on the given test data is {0:.4f}".format(accuracy))
 
-    write_data_to_file("data_word_model.txt", classifier.data_word_model)
-    write_data_to_file("data_model.txt", classifier.data_model)
-    write_results_to_file("data_results.txt", classifier.data_results)
+    write_data_to_file("data_word_model_probabilities.txt", classifier.data_word_model_probabilities)
+    write_data_to_file("data_word_model_scores.txt", classifier.data_word_model_scores)
+    write_results_to_file("data_document_results.txt", classifier.data_document_results)
 
     accuracy_results = open("accuracy_results.txt", "w")
     accuracy_results.write("Accuracy on the given test data is {0:.4f}".format(accuracy))
@@ -66,17 +71,18 @@ main()
 
 
 #FOR task 4: Finding mis-classified documents
+#To possibly see why these were mis-classified, it could be helpful to look at the data_word_model_scores.txt or data_word_model_probabilities files to see the scores/probabilities of each word
 '''
-The document "word space for the other language is not work performed or designed . for english ok ! work 's good" was mis-classified as NEG. 
-The NEG probability was roughly 3 points higher than POS.
+The document i followed all instructions before i attempted to do an upgrade from windows me to windows xp - infact , the more i read the more i was told to do a clean upgrade . 
+so , i did a backup and removed programs that were not compatible and i got some instructions off the internet on how to do it and it went very smooth . 
+i love what it gave me . clean upgrade means a clean start - you remove everything and start with a new program" was incorrectly classified as NEG.
 
+The document "this is a difficult book for beginner-level spanish language students .
+i kept it b / c i understand that it is one they use at the immersion course i will be taking soon in mexico . probably will not use it before that or subsequent"
+was incorrectly classified as POS
 
-The document "smaller size did not fit me or my son . it would be nice if you could use perhaps a hat size to determine right size . standard size worked fine." was mis-classified as NEG.
-
-
-The document "come on . i cannot play these dual discs in my car nor any regular cd players . j&mc are excellent though" was mis-classified as POS.
-The probabilities were nearly equal.
-
-The document "the quality of the dvd 's was good . however i did not like the third season as well as the first two seasons . it seemed that the story was setting up for season 4." was mis-classified  as POS.
+The document "i really enjoyed this movie ! its not one of the best and a little cheesy ! 
+but easy to watch and one of the funniest films ive seen him in ! just a shame he never got to show us what a good actor he could have been"
+was mis-classified as NEG.
 
 '''

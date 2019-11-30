@@ -17,9 +17,9 @@ class Classifier(object):
     
 
     #this data will be written to text files
-    data_word_model = {} #probability of each word appearing in each label
-    data_model = {} #each line with it's respectice label
-    data_results = {} #each line with its predicted label and actual label
+    data_word_model_probabilities = {} #probability of each word appearing in each label
+    data_word_model_scores = {} #each word with it's score for each label
+    data_document_results = {} #each document with its predicted label and actual label
 
     def clean(self, s):
         translator = str.maketrans("", "", string.punctuation)
@@ -89,7 +89,7 @@ class Classifier(object):
             self.word_log_probabilities['pos'][word] = log_prob_word_given_pos
             self.word_log_probabilities['neg'][word] = log_prob_word_given_neg
 
-            self.data_word_model[word] = ("POS probability: ", self.word_log_probabilities['pos'][word], "NEG probability: ", self.word_log_probabilities['neg'][word])
+            self.data_word_model_probabilities[word] = ("POS probability: ", self.word_log_probabilities['pos'][word], "NEG probability: ", self.word_log_probabilities['neg'][word])
 
         return self.word_log_probabilities
 
@@ -108,7 +108,7 @@ class Classifier(object):
 
                 pos_score += log_prob_word_given_pos
                 neg_score += log_prob_word_given_neg
-                self.data_results[word] = ()
+                self.data_document_results[word] = ()
 
             pos_score += self.log_class_priors['pos']
             neg_score += self.log_class_priors['neg']
@@ -122,11 +122,11 @@ class Classifier(object):
     #-----------------------TASK 3--------------------------------
     #return a list of what class each document belongs to 
     #docs is a list of strings
-    def classify_documents(self, docs):
+    def classify_documents(self, docs, labels):
         result = []
         temp = "pos"
         #for each line in the document, apply the bayes algorithm and append the result 
-        for line in docs:
+        for line, label in zip(docs, labels):
             counts = self.get_word_counts(self.tokenize(i) for i in line)
             pos_score = 0
             neg_score = 0
@@ -140,7 +140,7 @@ class Classifier(object):
                 pos_score += log_prob_word_given_pos
                 neg_score += log_prob_word_given_neg
                 
-                self.data_model[word] = ("POS score: ", pos_score, "NEG score: ", neg_score)
+                self.data_word_model_scores[word] = ("POS score: ", pos_score, "NEG score: ", neg_score)
 
             pos_score += self.log_class_priors['pos']
             neg_score += self.log_class_priors['neg']
@@ -152,7 +152,7 @@ class Classifier(object):
                 result.append("neg")
                 temp = "neg"
             string = ' '.join(line)
-            self.data_results[string] = ("POS probability: ", pos_score, ", NEG probability: ", neg_score, ", Classified as: ", temp, ", Actual class:", self.class_of_message[string])
+            self.data_document_results[string] = ("POS probability: ", pos_score, ", NEG probability: ", neg_score, ", Classified as: ", temp, ", Actual class:", label)
         return result
         
 
