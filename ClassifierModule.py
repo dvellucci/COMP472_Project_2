@@ -134,8 +134,10 @@ class Classifier(object):
                 if word not in self.vocab: continue
 
                 #get the log probability of a word appearing in each class and add smoothing of 0.5
-                log_prob_word_given_pos = math.log( (self.word_counts['pos'].get(word, 0.0) + 0.5) / (self.num_of_messages['pos']) )
-                log_prob_word_given_neg = math.log( (self.word_counts['neg'].get(word, 0.0) + 0.5) / (self.num_of_messages['neg']) )
+                log_prob_word_given_pos = self.word_log_probabilities['pos'][word] + 0.5
+                log_prob_word_given_neg = self.word_log_probabilities['neg'][word] + 0.5
+                #log_prob_word_given_pos = math.log( (self.word_counts['pos'].get(word, 0.0) + 0.5) / (self.num_of_messages['pos']) )
+                #log_prob_word_given_neg = math.log( (self.word_counts['neg'].get(word, 0.0) + 0.5) / (self.num_of_messages['neg']) )
 
                 pos_score += log_prob_word_given_pos
                 neg_score += log_prob_word_given_neg

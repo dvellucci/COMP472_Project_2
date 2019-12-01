@@ -31,6 +31,7 @@ def main():
     classifier = ClassifierModule.Classifier()
 
     #task 1
+    #Calculate log class priors and retrieve count of each word appearing in each label
     word_counts = classifier.train_nb(training_docs, training_labels)
 
     #task 2
@@ -85,4 +86,6 @@ The document "i really enjoyed this movie ! its not one of the best and a little
 but easy to watch and one of the funniest films ive seen him in ! just a shame he never got to show us what a good actor he could have been"
 was mis-classified as NEG.
 
+The document "i really enjoyed this movie ! its not one of the best and a little cheesy ! but easy to watch and one of the funniest 
+films ive seen him in ! just a shame he never got to show us what a good actor he could have been" was mis-classified as NEG
 '''
