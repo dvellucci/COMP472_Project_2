@@ -1,1 +1,1 @@
-Accuracy on the given test data is 0.8028
+Accuracy on the given test data is 0.5385

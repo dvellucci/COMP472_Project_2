@@ -30,6 +30,8 @@ def main():
 
     classifier = ClassifierModule.Classifier()
 
+    demo_docs, demo_labels = FileReader.read_documents("demo_data.txt")
+
     #task 1
     #Calculate log class priors and retrieve count of each word appearing in each label
     word_counts = classifier.train_nb(training_docs, training_labels)
@@ -56,15 +58,15 @@ def main():
 
     #Task 3 - Evaluate the test data
     print("\n Testing the given test data:")
-    prediction = classifier.classify_documents(evaluation_docs, evaluation_labels)
-    accuracy = sum(1 for i in range(len(prediction)) if prediction[i] == evaluation_labels[i]) / float(len(prediction))
+    prediction = classifier.classify_documents(demo_docs, demo_labels)
+    accuracy = sum(1 for i in range(len(prediction)) if prediction[i] == demo_labels[i]) / float(len(prediction))
     print("Accuracy on the given test data is {0:.4f}".format(accuracy))
 
     write_data_to_file("data_word_model_probabilities.txt", classifier.data_word_model_probabilities)
     write_data_to_file("data_word_model_scores.txt", classifier.data_word_model_scores)
-    write_results_to_file("data_document_results.txt", classifier.data_document_results)
+    write_results_to_file("demo_model.txt", classifier.data_document_results)
 
-    accuracy_results = open("accuracy_results.txt", "w")
+    accuracy_results = open("demo_results.txt", "w")
     accuracy_results.write("Accuracy on the given test data is {0:.4f}".format(accuracy))
     accuracy_results.close()
 
